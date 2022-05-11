@@ -35,3 +35,10 @@ module "kubernetes" {
   kubernetes_version = var.kubernetes_version
   kubeconfig_path    = var.kubeconfig_path
 }
+
+module "nginx_ingress" {
+  source             = "./modules/nginx_ic"
+  kubeconfig_path    = var.kubeconfig_path
+  cluster_name       = var.cluster_name
+}
+
