@@ -66,7 +66,7 @@ resource "null_resource" "install" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/files/hcloud-csi.yaml"
+    source      = "${path.module}/files/hcloud-csiv2.yaml"
     destination = "/tmp/hcloud-csi.yaml"
   }
 

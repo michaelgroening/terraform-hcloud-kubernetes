@@ -51,7 +51,7 @@ variable "subnet_ip_range" {
 variable "master_type" {
   description = "(Optional) - For more types have a look at https://www.hetzner.de/cloud"
   type        = string
-  default     = "cx11"
+  default     = "cpx11"
 }
 
 variable "master_count" {
@@ -93,8 +93,8 @@ variable "workername_format" {
 
 # KUBERNETES
 variable "kubernetes_version" {
-  description = "(Optional) - Kubernetes version installed, e.g. '1.21.3'."
+  description = "(Optional) - Kubernetes version installed, e.g. '1.23.6'."
   type        = string
-  default     = "1.21.3"
+  default     = "1.23.6"
 }
 
