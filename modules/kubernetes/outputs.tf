@@ -8,6 +8,10 @@ output "kubeconfig" {
   value = module.kubeconfig.stdout
 }
 
+output "kubeconfig_filepath" {
+  value = "./kubeconfig.yml"
+}
+
 output "endpoint" {
   value = module.endpoint.stdout
 }

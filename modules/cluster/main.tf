@@ -1,8 +1,13 @@
 # cluster/main.tf
 
 locals {
-  server_count = var.master_count + var.worker_count
-  servers      = concat(hcloud_server.master_node, hcloud_server.worker_node)
+  server_count = var.worker_count + var.master_count + var.powernode_count
+  servers      = concat(hcloud_server.master_node, hcloud_server.worker_node, hcloud_server.power_node)
+}
+
+resource "hcloud_ssh_key" "demo_cluster" {
+  name       = "demo-cluster"
+  public_key = file("${var.hcloud_ssh_private_key}.pub")
 }
 
 resource "hcloud_server" "master_node" {
@@ -11,21 +16,23 @@ resource "hcloud_server" "master_node" {
   location    = var.location
   image       = var.image
   server_type = var.master_type
-  ssh_keys    = var.hcloud_ssh_keys
+  ssh_keys    = [hcloud_ssh_key.demo_cluster.id]
 
   labels = {
     master = true
   }
 
   connection {
-    user    = "root"
-    type    = "ssh"
-    timeout = "2m"
-    host    = self.ipv4_address
+    user        = "root"
+    type        = "ssh"
+    timeout     = "2m"
+    agent       = false
+    private_key = file("${var.hcloud_ssh_private_key}")
+    host        = self.ipv4_address
   }
 
   provisioner "file" {
-    content     = data.template_file.floating_ip.rendered
+    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
     destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
   }
 
@@ -44,21 +51,60 @@ resource "hcloud_server" "worker_node" {
   location    = var.location
   image       = var.image
   server_type = var.worker_type
-  ssh_keys    = var.hcloud_ssh_keys
+  ssh_keys    = [hcloud_ssh_key.demo_cluster.id]
 
   labels = {
     master = false
   }
 
   connection {
-    user    = "root"
-    type    = "ssh"
-    timeout = "2m"
-    host    = self.ipv4_address
+    user        = "root"
+    type        = "ssh"
+    timeout     = "2m"
+    agent       = false
+    private_key = file("${var.hcloud_ssh_private_key}")
+    host        = self.ipv4_address
   }
 
   provisioner "file" {
-    content     = data.template_file.floating_ip.rendered
+    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
+    destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done",
+      "apt-get update",
+      "apt-get install -yq ufw jq"
+    ]
+  }
+}
+
+
+
+resource "hcloud_server" "power_node" {
+  count       = var.powernode_count
+  name        = format(var.powernode_format, count.index + 1)
+  location    = var.location
+  image       = var.image
+  server_type = var.powernode_type
+  ssh_keys    = [hcloud_ssh_key.demo_cluster.id]
+
+  labels = {
+    master = false
+  }
+
+  connection {
+    user        = "root"
+    type        = "ssh"
+    timeout     = "2m"
+    agent       = false
+    private_key = file("${var.hcloud_ssh_private_key}")
+    host        = self.ipv4_address
+  }
+
+  provisioner "file" {
+    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
     destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
   }
 
@@ -87,12 +133,4 @@ resource "hcloud_server_network" "private_network" {
   count     = local.server_count
   server_id = element(local.servers.*.id, count.index)
   subnet_id = hcloud_network_subnet.kubernetes_subnet.id
-}
-
-data "template_file" "floating_ip" {
-  template = file("${path.module}/files/60-floating-ip.cfg")
-
-  vars = {
-    loadbalancer_ip = var.loadbalancer_ip
-  }
 }

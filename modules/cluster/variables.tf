@@ -5,8 +5,8 @@ variable "hcloud_token" {
   default = ""
 }
 
-variable "hcloud_ssh_keys" {
-  type = list(any)
+variable "hcloud_ssh_private_key" {
+  type = string
 }
 
 variable "cluster_name" {
@@ -57,6 +57,19 @@ variable "worker_count" {
 }
 
 variable "workername_format" {
+  type = string
+}
+
+# POWER NODES
+variable "powernode_type" {
+  type = string
+}
+
+variable "powernode_count" {
+  type = number
+}
+
+variable "powernode_format" {
   type = string
 }
 

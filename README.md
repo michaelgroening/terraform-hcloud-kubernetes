@@ -1,7 +1,7 @@
 Hetzner Cloud Kubernetes provider 🏖️
 ==================
 
-Unofficial Terraform module to provide Kubernetes for the Hetzner Cloud.
+Unofficial Terraform module to provide Kubernetes for the Hetzner Cloud. This Module was written by Joost Döbken and modified to my needs by Michael Gröning. All praise goes to Joost, all criticism goes to me.
 
 [![JWDobken](https://circleci.com/gh/JWDobken/terraform-hcloud-kubernetes.svg?style=shield)](https://app.circleci.com/pipelines/github/JWDobken/terraform-hcloud-kubernetes?branch=main)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/JWDobken/terraform-hcloud-kubernetes?label=release)](https://github.com/JWDobken/terraform-hcloud-kubernetes/releases)
@@ -115,16 +115,19 @@ provider "kubernetes" {
 
 ## Considered features:
 
-- When a node is destroyed, I still need to run `kubectl drain <nodename>` and `kubectl delete node <nodename>`. Compare actual list with `kubectl get nodes --output 'jsonpath={.items[*].metadata.name}'`.
+- When a node is destroyed, we still need to run `kubectl drain <nodename>` and `kubectl delete node <nodename>`. Compare actual list with `kubectl get nodes --output 'jsonpath={.items[*].metadata.name}'`.
 - [High availability for the control plane](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/).
 - Node-pool architecture, with option to label and taint.
 - Initialize multiple master nodes.
 
 ## Acknowledgements 
 
-This module came about when I was looking for an affordable Kubernetes cluster. There is an [article from Christian Beneke](https://community.hetzner.com/tutorials/install-kubernetes-cluster) and there are a couple of Terraform projects on which the current is heavily based:
+This module came about when Joost Döbken [was looking for an affordable Kubernetes cluster](https://github.com/JWDobken/terraform-hcloud-kubernetes). There is an [article from Christian Beneke](https://community.hetzner.com/tutorials/install-kubernetes-cluster) and there are a couple of Terraform projects on which the current is heavily based:
+
+I modified it to fit my needs and to be a base for a short k8s Tutorial, I really want to thank Joost Döbken for hist work which helped me understandt Kubernetes and Terraform better and hopefully will help others.
 
 - Patrick Stadler's [hobby-kube provisioning](https://github.com/hobby-kube/provisioning)
 - Niclas Mietz's [terraform-k8s-hcloud](https://github.com/solidnerd/terraform-k8s-hcloud)
+
 
 Feel free to contribute or reach out to me.

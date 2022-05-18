@@ -8,7 +8,7 @@ metadata:
   namespace: kube-system
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: system:cloud-controller-manager
 roleRef:
@@ -55,7 +55,7 @@ spec:
           effect: "NoSchedule"
       hostNetwork: true
       containers:
-        - image: hetznercloud/hcloud-cloud-controller-manager:v1.8.0
+        - image: hetznercloud/hcloud-cloud-controller-manager:v1.12.1
           name: hcloud-cloud-controller-manager
           command:
             - "/bin/hcloud-cloud-controller-manager"
@@ -83,3 +83,13 @@ spec:
                 secretKeyRef:
                   name: hcloud
                   key: network
+            - name: HCLOUD_LOAD_BALANCERS_LOCATION
+              valueFrom:
+                secretKeyRef:
+                  name: hcloud
+                  key: location
+            - name: HCLOUD_LOAD_BALANCERS_ENABLED
+              valueFrom:
+                secretKeyRef:
+                  name: hcloud
+                  key: lb_enabled

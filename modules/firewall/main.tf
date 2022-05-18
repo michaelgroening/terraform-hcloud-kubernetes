@@ -8,30 +8,29 @@ variable "subnet_ip_range" {
   type = string
 }
 
+variable "hcloud_ssh_private_key" {
+  type = string
+}
+
 resource "null_resource" "firewall" {
   count = length(var.connections)
 
   triggers = {
-    template = data.template_file.ufw.rendered
+    template = templatefile("${path.module}/scripts/ufw.sh",{ subnet_ip_range = var.subnet_ip_range})
   }
+
 
   connection {
     host  = element(var.connections, count.index)
     user  = "root"
-    agent = true
+    type  = "ssh"
+    private_key = file("${var.hcloud_ssh_private_key}")
+    agent = false
   }
 
   provisioner "remote-exec" {
     inline = [
-      data.template_file.ufw.rendered
+      templatefile("${path.module}/scripts/ufw.sh",{ subnet_ip_range = var.subnet_ip_range})
     ]
-  }
-}
-
-data "template_file" "ufw" {
-  template = file("${path.module}/scripts/ufw.sh")
-
-  vars = {
-    subnet_ip_range = var.subnet_ip_range
   }
 }

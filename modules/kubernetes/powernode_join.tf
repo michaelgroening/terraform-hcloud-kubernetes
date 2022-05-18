@@ -1,11 +1,11 @@
 # kubernetes/kubeadm_join.tf
 
-resource "null_resource" "kubeadm_join" {
-  count      = length(var.worker_nodes)
+resource "null_resource" "powernode_join" {
+  count      = length(var.power_nodes)
   depends_on = [null_resource.install]
 
   connection {
-    host  = element(var.worker_nodes.*.ipv4_address, count.index)
+    host  = element(var.power_nodes.*.ipv4_address, count.index)
     user  = "root"
     type  = "ssh"
     private_key = file("${var.hcloud_ssh_private_key}")
@@ -34,7 +34,29 @@ resource "null_resource" "kubeadm_join" {
 
   provisioner "remote-exec" {
     inline = [
-      templatefile("${path.module}/scripts/worker.sh",{ master_private_ip = local.master_private_ip })
+      templatefile("${path.module}/scripts/power.sh",{ master_private_ip = local.master_private_ip })
     ]
   }
+}
+
+resource "null_resource" "powernode_label" {
+  depends_on = [
+    null_resource.powernode_join
+  ]
+  count = length(local.powernode_connections)
+
+  connection {
+    host  = element(var.master_nodes.*.ipv4_address,0)
+    user  = "root"
+    type  = "ssh"
+    private_key = file("${var.hcloud_ssh_private_key}")
+    agent = false
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "kubectl label --overwrite nodes power-${count.index+1} nodeclass=power"
+    ]
+  }
+
 }

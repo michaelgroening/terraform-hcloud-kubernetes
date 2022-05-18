@@ -1,7 +1,7 @@
 module "cluster" {
   source            = "./modules/cluster"
   hcloud_token      = var.hcloud_token
-  hcloud_ssh_keys   = var.hcloud_ssh_keys
+  hcloud_ssh_private_key = var.hcloud_ssh_private_key
   cluster_name      = var.cluster_name
   location          = var.location
   image             = var.image
@@ -14,21 +14,28 @@ module "cluster" {
   worker_type       = var.worker_type
   worker_count      = var.worker_count
   workername_format = var.workername_format
+  powernode_type = var.powernode_type
+  powernode_count = var.powernode_count
+  powernode_format = var.powernode_format
 }
 
 module "firewall" {
   source          = "./modules/firewall"
+  hcloud_ssh_private_key = var.hcloud_ssh_private_key
   connections     = module.cluster.all_nodes.*.ipv4_address
   subnet_ip_range = var.subnet_ip_range
 }
 
 module "kubernetes" {
   source             = "./modules/kubernetes"
+  hcloud_ssh_private_key = var.hcloud_ssh_private_key
   hcloud_token       = var.hcloud_token
   network_id         = module.cluster.network_id
   cluster_name       = var.cluster_name
   master_nodes       = module.cluster.master_nodes
   worker_nodes       = module.cluster.worker_nodes
+  power_nodes        = module.cluster.power_nodes
   private_ips        = module.cluster.private_ips
   kubernetes_version = var.kubernetes_version
+  kubeconfig_path    = var.kubeconfig_path
 }

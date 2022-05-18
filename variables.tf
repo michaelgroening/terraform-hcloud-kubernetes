@@ -7,17 +7,25 @@ variable "cluster_name" {
 variable "hcloud_token" {
   description = "(Required) - The Hetzner Cloud API Token, can also be specified with the HCLOUD_TOKEN environment variable."
   type        = string
+  sensitive   = true
 }
 
-variable "hcloud_ssh_keys" {
-  description = "(Required) - SSH key IDs or names which should be injected into the server at creation time."
-  type        = list(any)
+variable "hcloud_ssh_private_key" {
+  description = "(Required) - SSH key for ssh connections onto nodes"
+  type        = string
+  sensitive   = true
 }
 
 variable "location" {
   description = "(Optional) - Location, e.g. 'nbg1' (Neurenberg)."
   type        = string
   default     = "nbg1"
+}
+
+variable "kubeconfig_path" {
+  description = "(Optional) - path of kubeconfig file ( default ./kubeconfig.yaml)"
+  type        = string
+  default     = "./kubeconfig.yml"
 }
 
 # NETWORK
@@ -43,7 +51,7 @@ variable "subnet_ip_range" {
 variable "master_type" {
   description = "(Optional) - For more types have a look at https://www.hetzner.de/cloud"
   type        = string
-  default     = "cx11"
+  default     = "cpx11"
 }
 
 variable "master_count" {
@@ -74,6 +82,7 @@ variable "worker_type" {
 variable "worker_count" {
   description = "(Required) - Number of worker nodes."
   type        = number
+  default     = 2
 }
 
 variable "workername_format" {
@@ -82,9 +91,29 @@ variable "workername_format" {
   default     = "worker-%d"
 }
 
+# POWER NODES
+variable "powernode_type" {
+  description = "(Optional) - For more types have a look at https://www.hetzner.de/cloud"
+  type        = string
+  default     = "cx21"
+}
+
+variable "powernode_count" {
+  description = "(Required) - Number of powernodes."
+  type        = number
+  default     = 0
+}
+
+variable "powernode_format" {
+  description = "(Optional) - Format for the powernode names, defaults to 'power-0'."
+  type        = string
+  default     = "power-%d"
+}
+
 # KUBERNETES
 variable "kubernetes_version" {
-  description = "(Optional) - Kubernetes version installed, e.g. '1.21.3'."
+  description = "(Optional) - Kubernetes version installed, e.g. '1.23.6'."
   type        = string
-  default     = "1.21.3"
+  default     = "1.23.6"
 }
+
