@@ -6,6 +6,9 @@ metadata:
 stringData:
   token: "${hcloud_token}"
   network: "${network_id}"
+  location: "nbg1"
+  lb_enabled: "true"
+
 ---
 apiVersion: v1
 kind: Secret
