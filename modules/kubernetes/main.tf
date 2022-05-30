@@ -1,7 +1,8 @@
 # kubernetes/main.tf
 
 locals {
-  connections       = concat(var.master_nodes, var.worker_nodes).*.ipv4_address
+  connections       = concat(var.master_nodes, var.worker_nodes, var.power_nodes).*.ipv4_address
+  powernode_connections = var.power_nodes.*.ipv4_address
   master_ip         = element(var.master_nodes.*.ipv4_address, 0)
   master_private_ip = var.private_ips[0]
 }

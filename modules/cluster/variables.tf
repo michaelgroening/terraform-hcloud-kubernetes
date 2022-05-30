@@ -60,6 +60,19 @@ variable "workername_format" {
   type = string
 }
 
+# POWER NODES
+variable "powernode_type" {
+  type = string
+}
+
+variable "powernode_count" {
+  type = number
+}
+
+variable "powernode_format" {
+  type = string
+}
+
 # LOAD BALANCER
 variable "loadbalancer_ip" {
   type    = string

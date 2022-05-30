@@ -91,6 +91,25 @@ variable "workername_format" {
   default     = "worker-%d"
 }
 
+# POWER NODES
+variable "powernode_type" {
+  description = "(Optional) - For more types have a look at https://www.hetzner.de/cloud"
+  type        = string
+  default     = "cx21"
+}
+
+variable "powernode_count" {
+  description = "(Required) - Number of powernodes."
+  type        = number
+  default     = 0
+}
+
+variable "powernode_format" {
+  description = "(Optional) - Format for the powernode names, defaults to 'power-0'."
+  type        = string
+  default     = "power-%d"
+}
+
 # KUBERNETES
 variable "kubernetes_version" {
   description = "(Optional) - Kubernetes version installed, e.g. '1.23.6'."
