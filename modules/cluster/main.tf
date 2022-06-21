@@ -32,7 +32,7 @@ resource "hcloud_server" "master_node" {
   }
 
   provisioner "file" {
-    content     = data.template_file.floating_ip.rendered
+    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
     destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
   }
 
@@ -67,7 +67,7 @@ resource "hcloud_server" "worker_node" {
   }
 
   provisioner "file" {
-    content     = data.template_file.floating_ip.rendered
+    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
     destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
   }
 
@@ -102,7 +102,7 @@ resource "hcloud_server" "power_node" {
   }
 
   provisioner "file" {
-    content     = data.template_file.floating_ip.rendered
+    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
     destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
   }
 
@@ -131,12 +131,4 @@ resource "hcloud_server_network" "private_network" {
   count     = local.server_count
   server_id = element(local.servers.*.id, count.index)
   subnet_id = hcloud_network_subnet.kubernetes_subnet.id
-}
-
-data "template_file" "floating_ip" {
-  template = file("${path.module}/files/60-floating-ip.cfg")
-
-  vars = {
-    loadbalancer_ip = var.loadbalancer_ip
-  }
 }

@@ -16,7 +16,7 @@ resource "null_resource" "firewall" {
   count = length(var.connections)
 
   triggers = {
-    template = data.template_file.ufw.rendered
+    template = templatefile("${path.module}/scripts/ufw.sh",{ subnet_ip_range = var.subnet_ip_range})
   }
 
 
@@ -30,15 +30,7 @@ resource "null_resource" "firewall" {
 
   provisioner "remote-exec" {
     inline = [
-      data.template_file.ufw.rendered
+      templatefile("${path.module}/scripts/ufw.sh",{ subnet_ip_range = var.subnet_ip_range})
     ]
-  }
-}
-
-data "template_file" "ufw" {
-  template = file("${path.module}/scripts/ufw.sh")
-
-  vars = {
-    subnet_ip_range = var.subnet_ip_range
   }
 }

@@ -34,16 +34,8 @@ resource "null_resource" "powernode_join" {
 
   provisioner "remote-exec" {
     inline = [
-      data.template_file.power.rendered
+      templatefile("${path.module}/scripts/power.sh",{ master_private_ip = local.master_private_ip })
     ]
-  }
-}
-
-data "template_file" "power" {
-  template = file("${path.module}/scripts/power.sh")
-
-  vars = {
-    master_private_ip = local.master_private_ip
   }
 }
 

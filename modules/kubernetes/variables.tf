@@ -40,6 +40,7 @@ variable "power_nodes" {
 # KUBERNETES
 variable "kubernetes_version" {
   type = string
+  default     = "1.23.6"
 }
 
 variable "cluster_name" {
