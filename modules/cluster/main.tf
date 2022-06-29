@@ -10,6 +10,11 @@ resource "hcloud_ssh_key" "demo_cluster" {
   public_key = file("${var.hcloud_ssh_private_key}.pub")
 }
 
+resource "hcloud_ssh_key" "demo_cluster" {
+  name       = "demo-cluster"
+  public_key = file("${var.hcloud_ssh_private_key}.pub")
+}
+
 resource "hcloud_server" "master_node" {
   count       = var.master_count
   name        = format(var.mastername_format, count.index + 1)
