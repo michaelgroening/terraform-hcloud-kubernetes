@@ -39,27 +39,27 @@ output "worker_nodes_ids" {
   description = "The ids of the worker nodes."
 }
 
-output "kubeconfig" {
-  value       = module.kubernetes.kubeconfig
-  description = "Kubectl config file contents for the cluster."
-}
+# output "kubeconfig" {
+#   value       = module.kubernetes.kubeconfig
+#   description = "Kubectl config file contents for the cluster."
+# }
 
-output "endpoint" {
-  value       = module.kubernetes.endpoint
-  description = "The endpoint for the Kubernetes API."
-}
+# output "endpoint" {
+#   value       = module.kubernetes.endpoint
+#   description = "The endpoint for the Kubernetes API."
+# }
 
-output "certificate_authority_data" {
-  value       = module.kubernetes.certificate_authority_data
-  description = "Nested attribute containing certificate-authority-data for the cluster. This is the base64 encoded certificate data required to communicate with the cluster."
-}
+# output "certificate_authority_data" {
+#   value       = module.kubernetes.certificate_authority_data
+#   description = "Nested attribute containing certificate-authority-data for the cluster. This is the base64 encoded certificate data required to communicate with the cluster."
+# }
 
-output "client_certificate_data" {
-  value       = module.kubernetes.client_certificate_data
-  description = "Client certificate to communicate with the API."
-}
+# output "client_certificate_data" {
+#   value       = module.kubernetes.client_certificate_data
+#   description = "Client certificate to communicate with the API."
+# }
 
-output "client_key_data" {
-  value       = module.kubernetes.client_key_data
-  description = "Client key to communicate with the API."
-}
+# output "client_key_data" {
+#   value       = module.kubernetes.client_key_data
+#   description = "Client key to communicate with the API."
+# }

@@ -2,6 +2,8 @@
 set -euo pipefail
 
 # initialize the cluster
+[ -f /etc/containerd/config.toml ] && rm /etc/containerd/config.toml
+systemctl restart containerd
 kubeadm config images pull
 kubeadm init \
   --pod-network-cidr=10.244.0.0/16 \
@@ -32,7 +34,7 @@ kubectl apply -f /tmp/access_tokens.yaml
 kubectl apply -f /tmp/kube-flannel.yaml
 
 # Patch the flannel deployment to tolerate the uninitialized taint
-kubectl -n kube-system patch ds kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
+kubectl -n kube-flannel patch ds kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
 
 # deploy the Hetzner Cloud controller manager
 kubectl apply -n kube-system -f /tmp/ccm-networks.yaml

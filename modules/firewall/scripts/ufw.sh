@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Set firewall rules
 ufw --force reset
-ufw default deny incoming
+ufw default allow incoming
 ufw default allow outgoing
 
 ufw allow ssh

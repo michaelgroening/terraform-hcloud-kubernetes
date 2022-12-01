@@ -32,11 +32,6 @@ variable "worker_nodes" {
   type = list(any)
 }
 
-# POWER NODES
-variable "power_nodes" {
-  type = list(any)
-}
-
 # KUBERNETES
 variable "kubernetes_version" {
   type = string

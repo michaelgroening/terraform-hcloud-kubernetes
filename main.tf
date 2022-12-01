@@ -14,9 +14,6 @@ module "cluster" {
   worker_type       = var.worker_type
   worker_count      = var.worker_count
   workername_format = var.workername_format
-  powernode_type = var.powernode_type
-  powernode_count = var.powernode_count
-  powernode_format = var.powernode_format
 }
 
 module "firewall" {
@@ -34,7 +31,6 @@ module "kubernetes" {
   cluster_name       = var.cluster_name
   master_nodes       = module.cluster.master_nodes
   worker_nodes       = module.cluster.worker_nodes
-  power_nodes        = module.cluster.power_nodes
   private_ips        = module.cluster.private_ips
   kubernetes_version = var.kubernetes_version
   kubeconfig_path    = var.kubeconfig_path
