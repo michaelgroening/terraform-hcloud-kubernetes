@@ -35,8 +35,6 @@ spec:
     metadata:
       labels:
         app: hcloud-cloud-controller-manager
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       serviceAccountName: cloud-controller-manager
       dnsPolicy: Default
@@ -51,6 +49,10 @@ spec:
         # cloud controller manages should be able to run on masters
         - key: "node-role.kubernetes.io/master"
           effect: NoSchedule
+          operator: Exists
+        - key: "node-role.kubernetes.io/control-plane"
+          effect: NoSchedule
+          operator: Exists
         - key: "node.kubernetes.io/not-ready"
           effect: "NoSchedule"
       hostNetwork: true
@@ -93,3 +95,4 @@ spec:
                 secretKeyRef:
                   name: hcloud
                   key: lb_enabled
+      priorityClassName: system-cluster-critical    

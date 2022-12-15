@@ -114,6 +114,6 @@ variable "powernode_format" {
 variable "kubernetes_version" {
   description = "(Optional) - Kubernetes version installed, e.g. '1.23.6'."
   type        = string
-  default     = "1.23.6"
+  default     = "1.25.2"
 }
 

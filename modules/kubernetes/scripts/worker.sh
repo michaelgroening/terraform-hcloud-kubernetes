@@ -10,6 +10,9 @@ done
 
 token=$(cat /tmp/kubeadm_token)
 
+# join the worker nodes
+[ -f /etc/containerd/config.toml ] && rm /etc/containerd/config.toml
+systemctl restart containerd
 kubeadm join --token=$${token} ${master_private_ip}:6443 \
   --discovery-token-unsafe-skip-ca-verification \
   --ignore-preflight-errors=Swap

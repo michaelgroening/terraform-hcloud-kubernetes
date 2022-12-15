@@ -1,8 +1,8 @@
 # cluster/main.tf
 
 locals {
-  server_count = var.worker_count + var.master_count + var.powernode_count
-  servers      = concat(hcloud_server.master_node, hcloud_server.worker_node, hcloud_server.power_node)
+  server_count = var.worker_count + var.master_count
+  servers      = concat(hcloud_server.master_node, hcloud_server.worker_node)
 }
 
 resource "hcloud_ssh_key" "demo_cluster" {
@@ -51,43 +51,6 @@ resource "hcloud_server" "worker_node" {
   location    = var.location
   image       = var.image
   server_type = var.worker_type
-  ssh_keys    = [hcloud_ssh_key.demo_cluster.id]
-
-  labels = {
-    master = false
-  }
-
-  connection {
-    user        = "root"
-    type        = "ssh"
-    timeout     = "2m"
-    agent       = false
-    private_key = file("${var.hcloud_ssh_private_key}")
-    host        = self.ipv4_address
-  }
-
-  provisioner "file" {
-    content     = templatefile("${path.module}/files/60-floating-ip.cfg",{ loadbalancer_ip = var.loadbalancer_ip})
-    destination = "/etc/network/interfaces.d/60-floating-ip.cfg"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "while fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do sleep 1; done",
-      "apt-get update",
-      "apt-get install -yq ufw jq"
-    ]
-  }
-}
-
-
-
-resource "hcloud_server" "power_node" {
-  count       = var.powernode_count
-  name        = format(var.powernode_format, count.index + 1)
-  location    = var.location
-  image       = var.image
-  server_type = var.powernode_type
   ssh_keys    = [hcloud_ssh_key.demo_cluster.id]
 
   labels = {

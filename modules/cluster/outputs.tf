@@ -24,11 +24,6 @@ output "worker_nodes" {
   value       = hcloud_server.worker_node
 }
 
-output "power_nodes" {
-  description = "List of power-nodes."
-  value = hcloud_server.power_node
-}
-
 output "network_id" {
   value = hcloud_network.kubernetes_network.id
 }
